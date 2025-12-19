@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { FullScraperEvents, IndividualScraperEvents, UpdateEvent } from '@/entrypoint/utils/events';
 import { ScrapeMedia } from '@/entrypoint/utils/media';
 import { MetaOutput, getAllEmbedMetaSorted, getAllSourceMetaSorted, getSpecificId } from '@/entrypoint/utils/meta';
@@ -81,7 +82,9 @@ export interface ProviderControls {
 
   // Run a single source and its embeds (if any) with abort capability
   // returns the stream, or null if none found or aborted
-  runSourceWithEmbeds(runnerOps: Omit<RunnerOptions, 'sourceOrder'> & { sourceId: string; skipInit?: boolean }): Promise<RunOutput | null>;
+  runSourceWithEmbeds(
+    runnerOps: Omit<RunnerOptions, 'sourceOrder'> & { sourceId: string; skipInit?: boolean },
+  ): Promise<RunOutput | null>;
 
   // Run a specific source scraper
   runSourceScraper(runnerOps: SourceRunnerOptions): Promise<SourcererOutput>;
@@ -156,7 +159,12 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
 
     for (const currentSource of sources) {
       // Check for abort before starting the source
-      console.log('[controls] Checking abort signal for source:', currentSource.id, 'aborted:', runnerOps.abortSignal?.aborted);
+      console.log(
+        '[controls] Checking abort signal for source:',
+        currentSource.id,
+        'aborted:',
+        runnerOps.abortSignal?.aborted,
+      );
       if (runnerOps.abortSignal?.aborted) {
         console.log('[controls] Abort signal detected, calling abort event for:', currentSource.id);
         runnerOps.events?.abort?.(currentSource.id);
@@ -205,6 +213,13 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
       }
       if (!output) throw new Error('Invalid media type');
 
+      // Check for abort after source scraping completes
+      if (runnerOps.abortSignal?.aborted) {
+        console.log('[controls] Abort signal detected after source scraping for:', currentSource.id);
+        runnerOps.events?.abort?.(currentSource.id);
+        continue; // Skip to next source instead of returning null
+      }
+
       // return stream if there are any
       if (output.stream?.[0]) {
         const validationOps = {
@@ -216,6 +231,13 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
         };
         const playableStream = await validatePlayableStream(output.stream[0], validationOps, currentSource.id);
         if (!playableStream) throw new NotFoundError('No streams found');
+
+        // Check for abort before returning successful source result
+        if (runnerOps.abortSignal?.aborted) {
+          console.log('[controls] Abort signal detected before returning source result for:', currentSource.id);
+          runnerOps.events?.abort?.(currentSource.id);
+          continue; // Skip to next source instead of returning result
+        }
 
         return {
           sourceId: currentSource.id,
@@ -241,14 +263,22 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
         });
       }
 
-    for (const [ind, embed] of sortedEmbeds.entries()) {
-      // Check for abort before starting each embed
-      console.log('[controls] Checking abort signal for embed:', [currentSource.id, ind].join('-'), 'aborted:', runnerOps.abortSignal?.aborted);
-      if (runnerOps.abortSignal?.aborted) {
-        console.log('[controls] Abort signal detected for embed, calling abort event for:', [currentSource.id, ind].join('-'));
-        runnerOps.events?.abort?.([currentSource.id, ind].join('-'));
-        return null;
-      }
+      for (const [ind, embed] of sortedEmbeds.entries()) {
+        // Check for abort before starting each embed
+        console.log(
+          '[controls] Checking abort signal for embed:',
+          [currentSource.id, ind].join('-'),
+          'aborted:',
+          runnerOps.abortSignal?.aborted,
+        );
+        if (runnerOps.abortSignal?.aborted) {
+          console.log(
+            '[controls] Abort signal detected for embed, calling abort event for:',
+            [currentSource.id, ind].join('-'),
+          );
+          runnerOps.events?.abort?.([currentSource.id, ind].join('-'));
+          return null;
+        }
 
         const scraper = embeds.find((v) => v.id === embed.embedId);
         if (!scraper) throw new Error('Invalid embed returned');
@@ -295,6 +325,13 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
 
           runnerOps.events?.update?.(updateParams);
           continue;
+        }
+
+        // Check for abort before returning successful embed result
+        if (runnerOps.abortSignal?.aborted) {
+          console.log('[controls] Abort signal detected before returning embed result for:', currentSource.id);
+          runnerOps.events?.abort?.(currentSource.id);
+          continue; // Skip to next source instead of returning result
         }
 
         return {
