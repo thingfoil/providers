@@ -37,6 +37,7 @@ export type ProviderRunnerOptions = {
   events?: FullScraperEvents;
   media: ScrapeMedia;
   proxyStreams?: boolean; // temporary
+  abortSignal?: AbortSignal;
 };
 
 export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOptions): Promise<RunOutput | null> {
@@ -53,6 +54,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
     fetcher: ops.fetcher,
     proxiedFetcher: ops.proxiedFetcher,
     features: ops.features,
+    abortSignal: ops.abortSignal,
     progress(val) {
       ops.events?.update?.({
         id: lastId,
@@ -67,6 +69,12 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
   });
 
   for (const source of sources) {
+    // Check for abort before starting each source
+    if (ops.abortSignal?.aborted) {
+      ops.events?.abort?.(source.id);
+      break;
+    }
+
     ops.events?.start?.(source.id);
     lastId = source.id;
 
@@ -139,6 +147,12 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
     }
 
     for (const [ind, embed] of sortedEmbeds.entries()) {
+      // Check for abort before starting each embed
+      if (ops.abortSignal?.aborted) {
+        ops.events?.abort?.([source.id, ind].join('-'));
+        break;
+      }
+
       const scraper = embeds.find((v) => v.id === embed.embedId);
       if (!scraper) throw new Error('Invalid embed returned');
 

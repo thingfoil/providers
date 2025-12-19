@@ -17,6 +17,7 @@ export type IndividualSourceRunnerOptions = {
   id: string;
   events?: IndividualScraperEvents;
   proxyStreams?: boolean; // temporary
+  abortSignal?: AbortSignal;
 };
 
 export async function scrapeInvidualSource(
@@ -32,6 +33,7 @@ export async function scrapeInvidualSource(
     fetcher: ops.fetcher,
     proxiedFetcher: ops.proxiedFetcher,
     features: ops.features,
+    abortSignal: ops.abortSignal,
     progress(val) {
       ops.events?.update?.({
         id: sourceScraper.id,
@@ -94,6 +96,7 @@ export type IndividualEmbedRunnerOptions = {
   id: string;
   events?: IndividualScraperEvents;
   proxyStreams?: boolean; // temporary
+  abortSignal?: AbortSignal;
 };
 
 export async function scrapeIndividualEmbed(
@@ -109,6 +112,7 @@ export async function scrapeIndividualEmbed(
     fetcher: ops.fetcher,
     proxiedFetcher: ops.proxiedFetcher,
     features: ops.features,
+    abortSignal: ops.abortSignal,
     url,
     progress(val) {
       ops.events?.update?.({

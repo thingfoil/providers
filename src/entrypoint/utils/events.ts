@@ -39,6 +39,9 @@ export type FullScraperEvents = {
 
   // start scraping an item.
   start?: (id: string) => void;
+
+  // abort scraping of a specific item
+  abort?: (id: string) => void;
 };
 
 export type IndividualScraperEvents = {

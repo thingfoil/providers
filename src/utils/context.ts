@@ -7,6 +7,7 @@ export type ScrapeContext = {
   fetcher: UseableFetcher;
   progress(val: number): void;
   features: FeatureMap;
+  abortSignal?: AbortSignal;
 };
 
 export type EmbedInput = {
