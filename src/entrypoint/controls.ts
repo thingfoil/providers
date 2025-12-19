@@ -81,7 +81,7 @@ export interface ProviderControls {
 
   // Run a single source and its embeds (if any) with abort capability
   // returns the stream, or null if none found or aborted
-  runSourceWithEmbeds(runnerOps: Omit<RunnerOptions, 'sourceOrder'> & { sourceId: string }): Promise<RunOutput | null>;
+  runSourceWithEmbeds(runnerOps: Omit<RunnerOptions, 'sourceOrder'> & { sourceId: string; skipInit?: boolean }): Promise<RunOutput | null>;
 
   // Run a specific source scraper
   runSourceScraper(runnerOps: SourceRunnerOptions): Promise<SourcererOutput>;
@@ -113,7 +113,7 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
   };
 
   const runSourceWithEmbeds = async (
-    runnerOps: Omit<RunnerOptions, 'sourceOrder'> & { sourceId: string },
+    runnerOps: Omit<RunnerOptions, 'sourceOrder'> & { sourceId: string; skipInit?: boolean },
   ): Promise<RunOutput | null> => {
     const sourceItem = list.sources.find((s) => s.id === runnerOps.sourceId);
     if (!sourceItem) {
@@ -148,9 +148,11 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
       },
     };
 
-    runnerOps.events?.init?.({
-      sourceIds: sources.map((v) => v.id),
-    });
+    if (!runnerOps.skipInit) {
+      runnerOps.events?.init?.({
+        sourceIds: sources.map((v) => v.id),
+      });
+    }
 
     for (const currentSource of sources) {
       // Check for abort before starting the source
