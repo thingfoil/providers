@@ -156,7 +156,9 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
 
     for (const currentSource of sources) {
       // Check for abort before starting the source
+      console.log('[controls] Checking abort signal for source:', currentSource.id, 'aborted:', runnerOps.abortSignal?.aborted);
       if (runnerOps.abortSignal?.aborted) {
+        console.log('[controls] Abort signal detected, calling abort event for:', currentSource.id);
         runnerOps.events?.abort?.(currentSource.id);
         return null;
       }
@@ -239,12 +241,14 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
         });
       }
 
-      for (const [ind, embed] of sortedEmbeds.entries()) {
-        // Check for abort before starting each embed
-        if (runnerOps.abortSignal?.aborted) {
-          runnerOps.events?.abort?.([currentSource.id, ind].join('-'));
-          return null;
-        }
+    for (const [ind, embed] of sortedEmbeds.entries()) {
+      // Check for abort before starting each embed
+      console.log('[controls] Checking abort signal for embed:', [currentSource.id, ind].join('-'), 'aborted:', runnerOps.abortSignal?.aborted);
+      if (runnerOps.abortSignal?.aborted) {
+        console.log('[controls] Abort signal detected for embed, calling abort event for:', [currentSource.id, ind].join('-'));
+        runnerOps.events?.abort?.([currentSource.id, ind].join('-'));
+        return null;
+      }
 
         const scraper = embeds.find((v) => v.id === embed.embedId);
         if (!scraper) throw new Error('Invalid embed returned');
