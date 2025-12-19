@@ -159,14 +159,7 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
 
     for (const currentSource of sources) {
       // Check for abort before starting the source
-      console.log(
-        '[controls] Checking abort signal for source:',
-        currentSource.id,
-        'aborted:',
-        runnerOps.abortSignal?.aborted,
-      );
       if (runnerOps.abortSignal?.aborted) {
-        console.log('[controls] Abort signal detected, calling abort event for:', currentSource.id);
         runnerOps.events?.abort?.(currentSource.id);
         return null;
       }
@@ -215,7 +208,6 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
 
       // Check for abort after source scraping completes
       if (runnerOps.abortSignal?.aborted) {
-        console.log('[controls] Abort signal detected after source scraping for:', currentSource.id);
         runnerOps.events?.abort?.(currentSource.id);
         continue; // Skip to next source instead of returning null
       }
@@ -234,7 +226,6 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
 
         // Check for abort before returning successful source result
         if (runnerOps.abortSignal?.aborted) {
-          console.log('[controls] Abort signal detected before returning source result for:', currentSource.id);
           runnerOps.events?.abort?.(currentSource.id);
           continue; // Skip to next source instead of returning result
         }
@@ -265,17 +256,7 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
 
       for (const [ind, embed] of sortedEmbeds.entries()) {
         // Check for abort before starting each embed
-        console.log(
-          '[controls] Checking abort signal for embed:',
-          [currentSource.id, ind].join('-'),
-          'aborted:',
-          runnerOps.abortSignal?.aborted,
-        );
         if (runnerOps.abortSignal?.aborted) {
-          console.log(
-            '[controls] Abort signal detected for embed, calling abort event for:',
-            [currentSource.id, ind].join('-'),
-          );
           runnerOps.events?.abort?.([currentSource.id, ind].join('-'));
           return null;
         }
@@ -329,7 +310,6 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
 
         // Check for abort before returning successful embed result
         if (runnerOps.abortSignal?.aborted) {
-          console.log('[controls] Abort signal detected before returning embed result for:', currentSource.id);
           runnerOps.events?.abort?.(currentSource.id);
           continue; // Skip to next source instead of returning result
         }
