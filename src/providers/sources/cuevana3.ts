@@ -89,16 +89,6 @@ async function extractVideos(ctx: MovieScrapeContext | ShowScrapeContext, videos
   return videoList;
 }
 
-async function fetchTitleSubstitutes(): Promise<Record<string, string>> {
-  try {
-    const response = await fetch('https://raw.githubusercontent.com/moonpic/fixed-titles/refs/heads/main/main.json');
-    if (!response.ok) throw new Error('Failed to fetch fallback titles');
-    return await response.json();
-  } catch {
-    return {};
-  }
-}
-
 async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
   const mediaType = ctx.media.type;
   const tmdbId = ctx.media.tmdbId;
@@ -155,14 +145,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
   }
 
   if (embeds.length === 0) {
-    const fallbacks = await fetchTitleSubstitutes();
-    const fallbackTitle = fallbacks[tmdbId.toString()];
-
-    if (!fallbackTitle) {
-      throw new NotFoundError('No embed data found and no fallback title available');
-    }
-
-    normalizedTitle = normalizeTitle(fallbackTitle);
+    normalizedTitle = normalizeTitle(ctx.media.title);
     pageUrl =
       mediaType === 'movie'
         ? `${baseUrl}/ver-pelicula/${normalizedTitle}`
