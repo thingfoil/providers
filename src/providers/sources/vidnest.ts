@@ -31,7 +31,7 @@ export const vidnestScraper = makeSourcerer({
   id: 'vidnest',
   name: 'Vidnest',
   rank: 115,
-  disabled: false,
+  disabled: true,
   flags: [],
   scrapeMovie: (ctx: MovieScrapeContext) => scrape(ctx, 'movie'),
   scrapeShow: (ctx: ShowScrapeContext) => scrape(ctx, 'tv'),
