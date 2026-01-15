@@ -5,10 +5,10 @@ import { EmbedOutput, makeEmbed } from '../base';
 
 const ANIMETSU_SERVERS = ['pahe', 'zoro', 'zaza', 'meg', 'bato'] as const;
 
-const baseUrl = 'https://backend.animetsu.to';
+const baseUrl = 'https://backend.animetsu.net';
 const headers = {
-  referer: 'https://animetsu.to/',
-  origin: 'https://backend.animetsu.to',
+  referer: 'https://animetsu.net/',
+  origin: 'https://backend.animetsu.net',
   accept: 'application/json, text/plain, */*',
   'User-Agent':
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
