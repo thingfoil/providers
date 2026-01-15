@@ -46,8 +46,6 @@ export const vidnestHollymoviehdEmbed = makeEmbed({
     const streamHeaders = {
       Origin: 'https://flashstream.cc',
       Referer: 'https://flashstream.cc/',
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     };
 
     for (const source of sources) {
@@ -59,6 +57,7 @@ export const vidnestHollymoviehdEmbed = makeEmbed({
           flags: [],
           captions: [],
           headers: streamHeaders,
+          skipValidation: true,
         } as HlsBasedStream);
       }
     }
@@ -93,6 +92,7 @@ export const vidnestAllmoviesEmbed = makeEmbed({
         flags: [flags.CORS_ALLOWED],
         captions: [],
         preferredHeaders: stream.headers || {},
+        skipValidation: true,
       } as HlsBasedStream);
     }
 
