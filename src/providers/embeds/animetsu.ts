@@ -50,20 +50,6 @@ export function makeAnimetsuEmbed(id: string, rank: number = 100) {
       const sourceType = source.type;
       const sourceQuality = source.quality;
 
-      let streamHeaders = { ...headers };
-
-      // change headers if the url has backend.animetsu.cc bc they tried to make it harder
-      if (streamUrl.includes('animetsu.cc')) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { referer, origin, ...restHeaders } = streamHeaders;
-
-        streamHeaders = {
-          ...restHeaders,
-          origin: 'https://backend.animetsu.cc',
-          referer: 'https://backend.animetsu.cc/',
-        };
-      }
-
       ctx.progress(100);
 
       if (sourceType === 'mp4') {
@@ -87,7 +73,7 @@ export function makeAnimetsuEmbed(id: string, rank: number = 100) {
                 },
               },
               type: 'file',
-              headers: streamHeaders,
+              headers,
               flags: [],
             },
           ],
@@ -100,7 +86,7 @@ export function makeAnimetsuEmbed(id: string, rank: number = 100) {
             id: 'primary',
             type: 'hls',
             playlist: streamUrl,
-            headers: streamHeaders,
+            headers,
             flags: [],
             captions: [],
           },
