@@ -3,22 +3,18 @@ import { makeEmbed } from '@/providers/base';
 import { HlsBasedStream } from '@/providers/streams';
 import { NotFoundError } from '@/utils/errors';
 
-const PASSPHRASE = 'T8c8PQlSQVU4mBuW4CbE/g57VBbM5009QHd+ym93aZZ5pEeVpToY6OdpYPvRMVYp';
+const PASSPHRASE = 'A7kP9mQeXU2BWcD4fRZV+Sg8yN0/M5tLbC1HJQwYe6pOKFaE3vTnPZsRuYdVmLq2';
 
 async function decryptVidnestData(encryptedBase64: string): Promise<any> {
-  // Decode base64 to get encrypted bytes
   const encryptedBytes = Uint8Array.from(atob(encryptedBase64), (c) => c.charCodeAt(0));
 
-  // Extract IV (first 12 bytes), ciphertext (middle), and auth tag (last 16 bytes)
   const iv = encryptedBytes.slice(0, 12);
   const ciphertext = encryptedBytes.slice(12, -16);
   const tag = encryptedBytes.slice(-16);
 
-  // Create key from passphrase (decode base64 first, then take first 32 bytes)
   const keyData = Uint8Array.from(atob(PASSPHRASE), (c) => c.charCodeAt(0)).slice(0, 32);
   const key = await crypto.subtle.importKey('raw', keyData, { name: 'AES-GCM' }, false, ['decrypt']);
 
-  // Combine ciphertext and tag for decryption
   const encrypted = new Uint8Array([...ciphertext, ...tag]);
 
   try {

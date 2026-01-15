@@ -27,7 +27,7 @@ async function scrape(ctx: MovieScrapeContext | ShowScrapeContext, type: 'movie'
   };
 }
 
-const vidnestScraper = makeSourcerer({
+export const vidnestScraper = makeSourcerer({
   id: 'vidnest',
   name: 'Vidnest',
   rank: 115,
@@ -36,5 +36,3 @@ const vidnestScraper = makeSourcerer({
   scrapeMovie: (ctx: MovieScrapeContext) => scrape(ctx, 'movie'),
   scrapeShow: (ctx: ShowScrapeContext) => scrape(ctx, 'tv'),
 });
-
-export default vidnestScraper;
