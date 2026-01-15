@@ -45,7 +45,7 @@ import { supervideoScraper } from './embeds/supervideo';
 import { vidCloudScraper } from './embeds/vidcloud';
 import { vidhideEnglishScraper, vidhideLatinoScraper, vidhideSpanishScraper } from './embeds/vidhide';
 import { vidifyEmbeds } from './embeds/vidify';
-import { vidnestAllmoviesEmbed, vidnestHollymoviehdEmbed } from './embeds/vidnest';
+import { VidnestEmbeds } from './embeds/vidnest';
 import {
   VidsrcsuServer10Scraper,
   VidsrcsuServer11Scraper,
@@ -193,8 +193,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     ...vidifyEmbeds,
     ...zunimeEmbeds,
     ...AnimetsuEmbeds,
-    vidnestHollymoviehdEmbed,
-    vidnestAllmoviesEmbed,
+    ...VidnestEmbeds,
     myanimesubScraper,
     myanimedubScraper,
     filemoonScraper,
