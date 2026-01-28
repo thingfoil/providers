@@ -102,13 +102,17 @@ export async function validatePlayableStream(
         return null;
       }
     } else {
-      result = await ops.proxiedFetcher.full(stream.playlist, {
-        method: 'GET',
-        headers: {
-          ...stream.preferredHeaders,
-          ...stream.headers,
-        },
-      });
+      try {
+        result = await ops.proxiedFetcher.full(stream.playlist, {
+          method: 'GET',
+          headers: {
+            ...stream.preferredHeaders,
+            ...stream.headers,
+          },
+        });
+      } catch {
+        return null;
+      }
     }
 
     if (result.statusCode < 200 || result.statusCode >= 400 || isErrorResponse(result)) return null;
@@ -140,14 +144,18 @@ export async function validatePlayableStream(
           }
         }
 
-        return ops.proxiedFetcher.full(quality.url, {
-          method: 'GET',
-          headers: {
-            ...stream.preferredHeaders,
-            ...stream.headers,
-            Range: 'bytes=0-1',
-          },
-        });
+        try {
+          return await ops.proxiedFetcher.full(quality.url, {
+            method: 'GET',
+            headers: {
+              ...stream.preferredHeaders,
+              ...stream.headers,
+              Range: 'bytes=0-1',
+            },
+          });
+        } catch {
+          return { statusCode: 500, body: '', finalUrl: quality.url };
+        }
       }),
     );
     // remove invalid qualities from the stream
