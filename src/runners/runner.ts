@@ -109,7 +109,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
     }
     if (!output) throw new Error('Invalid media type');
 
-    // return stream is there are any
+    // return stream if there are any
     if (output.stream?.[0]) {
       try {
         const playableStream = await validatePlayableStream(output.stream[0], ops, source.id);
