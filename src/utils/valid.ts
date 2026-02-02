@@ -104,13 +104,18 @@ export async function validatePlayableStream(
       }
     } else {
       try {
-        result = await ops.proxiedFetcher.full(stream.playlist, {
-          method: 'GET',
-          headers: {
-            ...stream.preferredHeaders,
-            ...stream.headers,
-          },
-        });
+        result = await Promise.race([
+          ops.proxiedFetcher.full(stream.playlist, {
+            method: 'GET',
+            headers: {
+              ...stream.preferredHeaders,
+              ...stream.headers,
+            },
+          }),
+          new Promise<never>((_, reject) => 
+            setTimeout(() => reject(new Error('Timeout')), 10000)
+          )
+        ]);
       } catch {
         return null;
       }
@@ -147,14 +152,19 @@ export async function validatePlayableStream(
         }
 
         try {
-          return await ops.proxiedFetcher.full(quality.url, {
-            method: 'GET',
-            headers: {
-              ...stream.preferredHeaders,
-              ...stream.headers,
-              Range: 'bytes=0-1',
-            },
-          });
+          return await Promise.race([
+            ops.proxiedFetcher.full(quality.url, {
+              method: 'GET',
+              headers: {
+                ...stream.preferredHeaders,
+                ...stream.headers,
+                Range: 'bytes=0-1',
+              },
+            }),
+            new Promise<never>((_, reject) => 
+              setTimeout(() => reject(new Error('Timeout')), 10000)
+            )
+          ]);
         } catch {
           return { statusCode: 500, body: '', finalUrl: quality.url };
         }
