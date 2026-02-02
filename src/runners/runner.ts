@@ -111,13 +111,24 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
 
     // return stream is there are any
     if (output.stream?.[0]) {
-      const playableStream = await validatePlayableStream(output.stream[0], ops, source.id);
-      if (!playableStream) throw new NotFoundError('No streams found');
-
-      return {
-        sourceId: source.id,
-        stream: playableStream,
-      };
+      try {
+        const playableStream = await validatePlayableStream(output.stream[0], ops, source.id);
+        if (!playableStream) throw new NotFoundError('No streams found');
+        
+        return {
+          sourceId: source.id,
+          stream: playableStream,
+        };
+      } catch (error) {
+        const updateParams: UpdateEvent = {
+          id: source.id,
+          percentage: 100,
+          status: error instanceof NotFoundError ? 'notfound' : 'failure',
+          reason: error instanceof NotFoundError ? error.message : 'Stream validation failed',
+          error: error instanceof NotFoundError ? undefined : error,
+        };
+        ops.events?.update?.(updateParams);
+      }
     }
 
     // filter disabled and run embed scrapers on listed embeds
