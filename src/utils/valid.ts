@@ -92,6 +92,7 @@ export async function validatePlayableStream(
             ...stream.preferredHeaders,
             ...stream.headers,
           },
+          signal: AbortSignal.timeout(10000)
         });
         result = {
           statusCode: response.status,
@@ -133,6 +134,7 @@ export async function validatePlayableStream(
                 ...stream.headers,
                 Range: 'bytes=0-1',
               },
+              signal: AbortSignal.timeout(10000),
             });
             return {
               statusCode: response.status,
