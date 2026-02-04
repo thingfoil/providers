@@ -92,7 +92,7 @@ export async function validatePlayableStream(
             ...stream.preferredHeaders,
             ...stream.headers,
           },
-          signal: AbortSignal.timeout(10000)
+          signal: AbortSignal.timeout(20000),
         });
         result = {
           statusCode: response.status,
@@ -112,9 +112,9 @@ export async function validatePlayableStream(
               ...stream.headers,
             },
           }),
-          new Promise<never>((_, reject) => 
-            setTimeout(() => reject(new Error('Timeout')), 10000)
-          )
+          new Promise<never>((_, reject) => {
+            setTimeout(() => reject(new Error('Timeout')), 20000);
+          }),
         ]);
       } catch {
         return null;
@@ -139,7 +139,7 @@ export async function validatePlayableStream(
                 ...stream.headers,
                 Range: 'bytes=0-1',
               },
-              signal: AbortSignal.timeout(10000),
+              signal: AbortSignal.timeout(20000),
             });
             return {
               statusCode: response.status,
@@ -161,9 +161,9 @@ export async function validatePlayableStream(
                 Range: 'bytes=0-1',
               },
             }),
-            new Promise<never>((_, reject) => 
-              setTimeout(() => reject(new Error('Timeout')), 10000)
-            )
+            new Promise<never>((_, reject) => {
+              setTimeout(() => reject(new Error('Timeout')), 20000);
+            }),
           ]);
         } catch {
           return { statusCode: 500, body: '', finalUrl: quality.url };
