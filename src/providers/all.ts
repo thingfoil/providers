@@ -97,7 +97,6 @@ import { vidrockScraper } from './sources/vidrock';
 import { warezcdnScraper } from './sources/warezcdn';
 import { watchanimeworldScraper } from './sources/watchanimeworld';
 import { wecimaScraper } from './sources/wecima';
-import { yesmoviesScraper } from './sources/yesmovies';
 import { zunimeScraper } from './sources/zunime';
 
 export function gatherAllSources(): Array<Sourcerer> {
@@ -143,7 +142,6 @@ export function gatherAllSources(): Array<Sourcerer> {
     cinehdplusScraper,
     fullhdfilmizleScraper,
     vidlinkScraper,
-    yesmoviesScraper,
     vidrockScraper,
     watchanimeworldScraper,
   ];
