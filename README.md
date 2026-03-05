@@ -8,7 +8,7 @@ features:
 - scrape popular streaming websites
 - works in both browser and server-side
 
-Visit documentation here: 
+Visit documentation here: https://p-stream.github.io/providers/
 
 ## How to run locally or test my changes
 
