@@ -91,9 +91,13 @@ import { streamboxScraper } from './sources/streambox';
 import { turbovidSourceScraper } from './sources/turbovid';
 import { vidapiClickScraper } from './sources/vidapiclick';
 import { vidifyScraper } from './sources/vidify';
+import { vidlinkScraper } from './sources/vidlink';
 import { vidnestScraper } from './sources/vidnest';
+import { vidrockScraper } from './sources/vidrock';
 import { warezcdnScraper } from './sources/warezcdn';
+import { watchanimeworldScraper } from './sources/watchanimeworld';
 import { wecimaScraper } from './sources/wecima';
+import { yesmoviesScraper } from './sources/yesmovies';
 import { zunimeScraper } from './sources/zunime';
 
 export function gatherAllSources(): Array<Sourcerer> {
@@ -138,6 +142,10 @@ export function gatherAllSources(): Array<Sourcerer> {
     debridScraper,
     cinehdplusScraper,
     fullhdfilmizleScraper,
+    vidlinkScraper,
+    yesmoviesScraper,
+    vidrockScraper,
+    watchanimeworldScraper,
   ];
 }
 
