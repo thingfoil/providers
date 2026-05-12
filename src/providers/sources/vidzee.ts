@@ -113,6 +113,13 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
         const label = source.name || source.type || 'VidZee';
         const isHls = decodedUrl.includes('.m3u8');
+        const streamHeaders = {
+          'accept': '*/*',
+          'referer': 'https://player.vidzee.wtf',
+          'origin': 'https://player.vidzee.wtf/',
+          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36',
+          'accept-language': 'en-US,en;q=0.9,fr-FR;q=0.8,fr;q=0.7,de;q=0.6,es-US;q=0.5,es;q=0.4'
+        };
 
         if (isHls) {
           allStreams.push({
@@ -120,7 +127,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
             type: 'hls',
             playlist: decodedUrl,
             flags: [flags.CORS_ALLOWED],
-            preferredHeaders: { Referer: 'https://core.vidzee.wtf/' },
+            preferredHeaders: streamHeaders,
           });
         } else {
           allStreams.push({
@@ -133,7 +140,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
               },
             },
             flags: [flags.CORS_ALLOWED],
-            preferredHeaders: { Referer: 'https://core.vidzee.wtf/' },
+            preferredHeaders: {...streamHeaders},
           });
         }
       }
@@ -155,7 +162,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const vidzeeScraper = makeSourcerer({
   id: 'vidzee',
   name: 'VidZee',
-  rank: 125,
+  rank: 1,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
