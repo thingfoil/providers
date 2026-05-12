@@ -94,6 +94,7 @@ import { vidifyScraper } from './sources/vidify';
 import { vidlinkScraper } from './sources/vidlink';
 import { vidnestScraper } from './sources/vidnest';
 import { vidrockScraper } from './sources/vidrock';
+import { vidzeeScraper } from './sources/vidzee';
 import { warezcdnScraper } from './sources/warezcdn';
 import { watchanimeworldScraper } from './sources/watchanimeworld';
 import { wecimaScraper } from './sources/wecima';
@@ -143,6 +144,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     fullhdfilmizleScraper,
     vidlinkScraper,
     vidrockScraper,
+    vidzeeScraper,
     watchanimeworldScraper,
   ];
 }
