@@ -95,8 +95,10 @@ import { vidlinkScraper } from './sources/vidlink';
 import { vidnestScraper } from './sources/vidnest';
 import { vidrockScraper } from './sources/vidrock';
 import { vidzeeScraper } from './sources/vidzee';
+import { vixSrcScraper } from './sources/vixsrc';
 import { warezcdnScraper } from './sources/warezcdn';
 import { watchanimeworldScraper } from './sources/watchanimeworld';
+import { webtorScraper } from './sources/webtor';
 import { wecimaScraper } from './sources/wecima';
 import { zunimeScraper } from './sources/zunime';
 
@@ -145,7 +147,9 @@ export function gatherAllSources(): Array<Sourcerer> {
     vidlinkScraper,
     vidrockScraper,
     vidzeeScraper,
+    vixSrcScraper,
     watchanimeworldScraper,
+    webtorScraper,
   ];
 }
 
