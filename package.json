@@ -1,5 +1,5 @@
 {
-  "name": "@thingfoil/providers",
+  "name": "@afterstream/providers",
   "version": "3.2.1",
   "description": "Package that contains all the providers of Afterstream.",
   "type": "module",
