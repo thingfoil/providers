@@ -1,7 +1,7 @@
 {
-  "name": "@p-stream/providers",
-  "version": "3.2.0",
-  "description": "Package that contains all the providers of p-stream",
+  "name": "@thingfoil/providers",
+  "version": "3.2.1",
+  "description": "Package that contains all the providers of Afterstream.",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -22,18 +22,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/p-stream/providers.git"
+    "url": "git+https://github.com/thingfoil/providers.git"
   },
   "keywords": [
     "p-stream",
-    "providers"
+    "providers",
+    "afterstream"
   ],
-  "author": "p-stream",
+  "author": "thingfoil",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/p-stream/providers/issues"
+    "url": "https://github.com/thingfoil/providers/issues"
   },
-  "homepage": "https://p-stream.github.io/providers/",
+  "homepage": "https://thingfoil.github.io/providers/",
   "scripts": {
     "build": "vite build",
     "cli": "vite-node ./src/dev-cli/index.ts",
