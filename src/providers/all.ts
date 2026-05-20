@@ -78,6 +78,7 @@ import { embedsuScraper } from './sources/embedsu';
 import { fullhdfilmizleScraper } from './sources/fullhdfilmizle';
 import { hdRezkaScraper } from './sources/hdrezka';
 import { lookmovieScraper } from './sources/lookmovie';
+import { mappleScraper } from './sources/mapple';
 import { movies4fScraper } from './sources/movies4f';
 import { myanimeScraper } from './sources/myanime';
 import { nunflixScraper } from './sources/nunflix';
@@ -148,6 +149,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     vidzeeScraper,
     vixSrcScraper,
     watchanimeworldScraper,
+    mappleScraper,
   ];
 }
 
