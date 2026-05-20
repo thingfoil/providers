@@ -7,6 +7,8 @@ import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
+import { convertPlaylistsToDataUrls } from '@/utils/playlist';
+import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 const vidzeeBase = 'https://player.vidzee.wtf/api/server';
 const em = "4f2a9c7d1e8b3a6f0d5c2e9a7b1f4d8c"; // from source code
@@ -57,8 +59,17 @@ function decodeVidZeeToken(token: string, key: string): string | null {
   try {
     if (!token || /^https?:\/\//i.test(token)) return token;
 
-    // The token is base64 encoded "ivBase64:cipherBase64"
-    const raw = Buffer.from(token, 'base64').toString('utf8');
+    // Fix: Replace Node's Buffer with browser-native atob + decodeURIComponent
+    const binaryString = atob(token.trim());
+    
+    // Safely handle UTF-8 strings disguised in base64
+    const raw = decodeURIComponent(
+      Array.prototype.map.call(binaryString, (c: string) => {
+        // eslint-disable-next-line prefer-template
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join('')
+    );
+
     if (!raw.includes(':')) return null;
 
     const [ivB64, cipherB64] = raw.split(':');
@@ -78,7 +89,6 @@ function decodeVidZeeToken(token: string, key: string): string | null {
     return null;
   }
 }
-
 async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
   const servers = [0, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   const apiKey = await fetchVidzeeKey()||G;
@@ -108,7 +118,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
       for (const source of apiSources) {
         const decodedUrl = decodeVidZeeToken(source.link, apiKey);
-        
+        console.log(decodedUrl, source.link, apiKey);
         if (!decodedUrl) continue;
 
         const label = source.name || source.type || 'VidZee';
@@ -125,9 +135,8 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
           allStreams.push({
             id: `Server ${sr}-${label}`,
             type: 'hls',
-            playlist: decodedUrl,
+            playlist: createM3U8ProxyUrl(decodedUrl, ctx.features, streamHeaders),
             flags: [flags.CORS_ALLOWED],
-            preferredHeaders: streamHeaders,
           });
         } else {
           allStreams.push({
@@ -152,6 +161,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
   if (allStreams.length === 0) {
     throw new NotFoundError('No streams found on VidZee');
   }
+  console.log('VidZee streams:', allStreams);
 
   return {
     embeds: [],
