@@ -1,6 +1,8 @@
+import { flags } from '@/index';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
+import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 const API_BASE = 'https://enc-dec.app/api';
 const VIDLINK_BASE = 'https://vidlink.pro/api/b';
@@ -12,7 +14,6 @@ const headers = {
   Referer: 'https://vidlink.pro/',
   Origin: 'https://vidlink.pro',
 };
-
 async function encryptTmdbId(ctx: MovieScrapeContext | ShowScrapeContext, tmdbId: string): Promise<string> {
   const response = await ctx.proxiedFetcher<{ result: string }>(`${API_BASE}/enc-vidlink`, {
     method: 'GET',
@@ -64,6 +65,13 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
   }
 
   const { stream } = vidlinkData;
+  const url = new URL(stream.playlist || '');
+
+  const headersRaw = url.searchParams.get('headers') || '{}';
+  const headersObj = JSON.parse(headersRaw);
+  const encoded = encodeURIComponent(JSON.stringify(headersObj));
+  url.searchParams.set('headers', encoded);
+  stream.playlist = url.toString();
 
   const captions = [];
   if (stream.captions && Array.isArray(stream.captions)) {
@@ -93,9 +101,9 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
         id: stream.id || 'primary',
         type: stream.type || 'file',
         qualities: stream.qualities || {},
-        playlist: stream.playlist,
+        playlist: createM3U8ProxyUrl(stream.playlist, ctx.features, headers),
         captions,
-        flags: [],
+        flags: [flags.CORS_ALLOWED],
         headers: stream.headers || headers,
       },
     ],
@@ -105,9 +113,9 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const vidlinkScraper = makeSourcerer({
   id: 'vidlink',
   name: 'VidLink',
-  rank: 240,
+  rank: 1,
   disabled: false,
-  flags: [],
+  flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
 });
