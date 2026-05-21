@@ -3,6 +3,7 @@ import { load } from 'cheerio';
 import { flags } from '@/entrypoint/utils/targets';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
+import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 import { SourcererOutput, makeSourcerer } from '../base';
 
@@ -19,6 +20,11 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
   const providerLang = 'en';
   apiPath += `?lang=${providerLang}`;
 
+  const headers = {
+    Referer: baseUrl,
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  };
   const apiResponse = await ctx.proxiedFetcher<{ src: string }>(apiPath, {
     baseUrl,
     headers: {
@@ -34,11 +40,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
   const embedPath = apiResponse.src.replace(/^\//, '');
   const embedPage = await ctx.proxiedFetcher<string>(embedPath, {
     baseUrl,
-    headers: {
-      Referer: baseUrl,
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-    },
+    headers,
   });
 
   const $ = load(embedPage);
@@ -69,7 +71,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
       {
         id: 'primary',
         type: 'hls',
-        playlist: finalUrl,
+        playlist: createM3U8ProxyUrl(finalUrl, ctx.features, headers),
         flags: [flags.CORS_ALLOWED],
         captions: [],
       },
@@ -81,7 +83,7 @@ export const vixSrcScraper = makeSourcerer({
   id: 'vixsrc',
   name: 'VixSrc',
   rank: 12,
-  disabled: false,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,

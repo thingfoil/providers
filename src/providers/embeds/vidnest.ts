@@ -1,11 +1,13 @@
+import { flags } from '@/entrypoint/utils/targets';
 import { NotFoundError } from '@/utils/errors';
+import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 import { makeEmbed } from '../base';
 
-const VIDNEST_SERVERS = ['hollymoviehd', 'allmovies'] as const;
+const VIDNEST_SERVERS = ['allmovies', 'hollymoviehd'] as const;
 
-const baseUrl = 'https://second.vidnest.fun';
-const PASSPHRASE = 'A7kP9mQeXU2BWcD4fRZV+Sg8yN0/M5tLbC1HJQwYe6pOKFaE3vTnPZsRuYdVmLq2';
+const baseUrl = 'https://new.vidnest.fun';
+const PASSPHRASE = 'RB0fpH8ZEyVLkv7c2i6MAJ5u3IKFDxlS1NTsnGaqmXYdUrtzjwObCgQP94hoeW+/=';
 
 const serverConfigs: Record<string, { streamDomains: string[] | null; origin: string; referer: string }> = {
   hollymoviehd: {
@@ -20,30 +22,40 @@ const serverConfigs: Record<string, { streamDomains: string[] | null; origin: st
   },
 };
 
-function base64ToUint8Array(base64: string): Uint8Array {
-  const binaryString = atob(base64);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
+function customBase64Decode(data: string, alphabet: string): string {
+  const charMap: Record<string, number> = {};
+  for (let i = 0; i < alphabet.length; i++) {
+    charMap[alphabet[i]] = i;
   }
-  return bytes;
+  const bytes: number[] = [];
+
+  for (let i = 0; i < data.length; i += 4) {
+    let chunk = data.slice(i, i + 4);
+    while (chunk.length < 4) chunk += '=';
+    const idxs = [];
+    for (let j = 0; j < 4; j++) {
+      const val = charMap[chunk[j]];
+      idxs.push(val !== undefined ? val : 64);
+    }
+    bytes.push((idxs[0] << 2) | (idxs[1] >> 4));
+    if (idxs[2] !== 64) {
+      bytes.push(((idxs[1] & 15) << 4) | (idxs[2] >> 2));
+    }
+    if (idxs[3] !== 64) {
+      bytes.push(((idxs[2] & 3) << 6) | idxs[3]);
+    }
+  }
+
+  return new TextDecoder().decode(new Uint8Array(bytes));
 }
-
 async function decryptVidnestData(encryptedBase64: string): Promise<any> {
-  const encryptedBytes = base64ToUint8Array(encryptedBase64);
-  const iv = encryptedBytes.slice(0, 12);
-  const ciphertext = encryptedBytes.slice(12, -16);
-  const tag = encryptedBytes.slice(-16);
-  const keyData = base64ToUint8Array(PASSPHRASE).slice(0, 32);
+  const decoded = customBase64Decode(encryptedBase64, PASSPHRASE);
 
-  const cryptoKey = await crypto.subtle.importKey('raw', keyData, { name: 'AES-GCM' }, false, ['decrypt']);
-
-  const combined = new Uint8Array(ciphertext.length + tag.length);
-  combined.set(ciphertext, 0);
-  combined.set(tag, ciphertext.length);
-
-  const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, cryptoKey, combined);
-  return JSON.parse(new TextDecoder('utf-8').decode(decrypted));
+  try {
+    return JSON.parse(decoded);
+  } catch {
+    return decoded;
+  }
 }
 
 export function makeVidnestEmbed(id: string, rank: number = 100) {
@@ -54,7 +66,7 @@ export function makeVidnestEmbed(id: string, rank: number = 100) {
     name: `Vidnest ${id}`,
     rank,
     disabled: false,
-    flags: [],
+    flags: [flags.CORS_ALLOWED],
     async scrape(ctx) {
       const query = JSON.parse(ctx.url);
       const { type, tmdbId, season, episode } = query;
@@ -91,12 +103,15 @@ export function makeVidnestEmbed(id: string, rank: number = 100) {
           {
             id,
             type: 'hls',
-            playlist: streams[0],
+            playlist: createM3U8ProxyUrl(streams[0], ctx.features, {
+              Origin: config?.origin,
+              Referer: config?.referer,
+            }),
             headers: {
               Origin: config?.origin,
               Referer: config?.referer,
             },
-            flags: [],
+            flags: [flags.CORS_ALLOWED],
             captions: [],
           },
         ],
