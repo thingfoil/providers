@@ -77,6 +77,7 @@ import { debridScraper } from './sources/debrid';
 import { embedsuScraper } from './sources/embedsu';
 import { fullhdfilmizleScraper } from './sources/fullhdfilmizle';
 import { hdRezkaScraper } from './sources/hdrezka';
+import { icefyScraper } from './sources/icefy';
 import { lookmovieScraper } from './sources/lookmovie';
 import { mappleScraper } from './sources/mapple';
 import { movies4fScraper } from './sources/movies4f';
@@ -150,6 +151,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     vixSrcScraper,
     watchanimeworldScraper,
     mappleScraper,
+    icefyScraper,
   ];
 }
 
