@@ -24,9 +24,9 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const vidnestScraper = makeSourcerer({
   id: 'vidnest',
   name: 'Vidnest',
-  rank: 169,
+  rank: 2,
   flags: [flags.CORS_ALLOWED],
-  disabled: false, // The streams cause the site to crash
+  disabled: true, // The streams cause the site to crash(i found this here too)
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
 });

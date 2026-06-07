@@ -82,8 +82,8 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
 export const vixSrcScraper = makeSourcerer({
   id: 'vixsrc',
   name: 'VixSrc',
-  rank: 12,
-  disabled: true,
+  rank: 2,
+  disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,

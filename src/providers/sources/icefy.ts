@@ -49,7 +49,7 @@ export const icefyScraper = makeSourcerer({
   id: 'icefy',
   name: 'Icefy',
   rank: 235,
-  disabled: false,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,

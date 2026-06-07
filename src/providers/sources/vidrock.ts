@@ -6,15 +6,15 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 const headers = {
-  Origin: 'https://vidrock.net',
-  Referer: 'https://vidrock.net/',
+  Origin: 'https://vidrock.ru',
+  Referer: 'https://vidrock.ru/',
 };
 
 const passphrase = 'x7k9mPqT2rWvY8zA5bC3nF6hJ2lK4mN9';
 const key = CryptoJS.enc.Utf8.parse(passphrase);
 const iv = CryptoJS.enc.Utf8.parse(passphrase.substring(0, 16));
 
-const baseUrl = 'https://vidrock.net/api';
+const baseUrl = 'https://vidrock.ru/api';
 const userAgent =
   'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36';
 
@@ -157,9 +157,9 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const vidrockScraper = makeSourcerer({
   id: 'vidrock',
   name: 'Granite',
-  rank: 170,
-  disabled: false,
-  flags: [],
+  rank: 108,
+  disabled: true,
+  flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
 });

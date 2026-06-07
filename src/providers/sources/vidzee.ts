@@ -172,6 +172,7 @@ export const vidzeeScraper = makeSourcerer({
   id: 'vidzee',
   name: 'VidZee',
   rank: 240,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
