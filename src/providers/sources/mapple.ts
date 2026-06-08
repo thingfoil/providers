@@ -84,7 +84,7 @@ export const mappleScraper = makeSourcerer({
   id: 'mapple',
   name: 'Mapple',
   rank: 15,
-  disabled: false,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,

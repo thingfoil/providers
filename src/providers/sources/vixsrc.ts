@@ -83,7 +83,7 @@ export const vixSrcScraper = makeSourcerer({
   id: 'vixsrc',
   name: 'VixSrc',
   rank: 2,
-  disabled: false,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
