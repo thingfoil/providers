@@ -24,11 +24,11 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
     throw new NotFoundError(`Soory pookie, something broke 😢`);
   }
 
-  if (!apiResponse?.streams.length) throw new NotFoundError(`Soory pookie, couldn't find anything on Wither 😢`);
+  if (!apiResponse?.streams?.length) throw new NotFoundError(`Soory pookie, couldn't find anything on Wither 😢`);
 
   return {
     embeds: [],
-    ...apiResponse,
+    stream: apiResponse.streams,
   };
 };
 

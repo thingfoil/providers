@@ -23,11 +23,11 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
   if ('error' in apiResponse) {
     throw new NotFoundError(`Soory pookie, something broke 😢`);
   }
-  if (!apiResponse?.streams.length) throw new NotFoundError(`Soory pookie, couldn't find anything on Hardpasta 😢`);
+  if (!apiResponse?.streams?.length) throw new NotFoundError(`Soory pookie, couldn't find anything on Hardpasta 😢`);
   ctx.progress(100);
   return {
     embeds: [],
-    ...apiResponse,
+    stream: apiResponse.streams,
   };
 };
 
