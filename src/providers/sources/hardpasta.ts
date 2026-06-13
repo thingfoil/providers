@@ -34,7 +34,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
 export const hardpastaScraper = makeSourcerer({
   id: 'hardpasta',
   name: '🔥 Hardpasta',
-  rank: 180,
+  rank: 240,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,

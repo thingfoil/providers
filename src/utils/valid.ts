@@ -13,7 +13,6 @@ import { ProviderRunnerOptions } from '@/runners/runner';
 const SKIP_VALIDATION_CHECK_IDS = [
   warezcdnembedMp4Scraper.id,
   streamtapeScraper.id,
-  witherScraper.id,
   cattusScraper.id,
   hardpastaScraper.id,
   // deltaScraper.id,

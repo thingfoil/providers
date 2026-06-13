@@ -35,7 +35,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
 export const witherScraper = makeSourcerer({
   id: 'wither',
   name: '🔥 Wither',
-  rank: 240,
+  rank: 180,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
