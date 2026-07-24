@@ -5,6 +5,7 @@ import { streamtapeScraper } from '@/providers/embeds/streamtape';
 import { warezcdnembedMp4Scraper } from '@/providers/embeds/warezcdn/mp4';
 import { cattusScraper } from '@/providers/sources/cattus';
 import { hardpastaScraper } from '@/providers/sources/hardpasta';
+import { rinkerScraper } from '@/providers/sources/rinker';
 import { witherScraper } from '@/providers/sources/wither';
 import { Stream } from '@/providers/streams';
 import { IndividualEmbedRunnerOptions } from '@/runners/individualRunner';
@@ -15,6 +16,8 @@ const SKIP_VALIDATION_CHECK_IDS = [
   streamtapeScraper.id,
   cattusScraper.id,
   hardpastaScraper.id,
+  witherScraper.id,
+  rinkerScraper.id,
   // deltaScraper.id,
   // alphaScraper.id,
   // novaScraper.id,

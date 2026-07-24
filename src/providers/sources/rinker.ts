@@ -5,7 +5,7 @@ import { NotFoundError } from '@/utils/errors';
 import { SourcererOutput, makeSourcerer } from '../base';
 import { Stream } from '../streams';
 
-const baseUrl = 'https://hahoy.willowmovies.com/download/partners/afterstream/hardpasta';
+const baseUrl = 'https://willowmovies.com/download/partners/afterstream/rinker';
 
 const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Promise<SourcererOutput> => {
   let apiPath = '';
@@ -31,10 +31,10 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
   };
 };
 
-export const hardpastaScraper = makeSourcerer({
-  id: 'hardpasta',
-  name: '🔥 Hardpasta [Willow]',
-  rank: 230,
+export const rinkerScraper = makeSourcerer({
+  id: 'rinker',
+  name: '🔥 Rinker [willow]',
+  rank: 240,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,

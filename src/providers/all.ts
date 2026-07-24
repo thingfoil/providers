@@ -89,6 +89,7 @@ import { pelisplushdScraper } from './sources/pelisplushd';
 import { primewireScraper } from './sources/primewire';
 import { rgshowsScraper } from './sources/rgshows';
 import { ridooMoviesScraper } from './sources/ridomovies';
+import { rinkerScraper } from './sources/rinker';
 import { slidemoviesScraper } from './sources/slidemovies';
 import { soaperTvScraper } from './sources/soapertv';
 import { streamboxScraper } from './sources/streambox';
@@ -158,6 +159,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     witherScraper,
     cattusScraper,
     hardpastaScraper,
+    rinkerScraper,
   ];
 }
 
