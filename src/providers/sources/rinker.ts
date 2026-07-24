@@ -5,7 +5,7 @@ import { NotFoundError } from '@/utils/errors';
 import { SourcererOutput, makeSourcerer } from '../base';
 import { Stream } from '../streams';
 
-const baseUrl = 'https://willowmovies.com/download/partners/afterstream/rinker';
+const baseUrl = 'https://hahoy.willowmovies.com/download/partners/afterstream/rinker';
 
 const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Promise<SourcererOutput> => {
   let apiPath = '';
